@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>clock</title>
+    <style>
+        /* 通过css对画布大小进行拉伸或缩小 */
+        canvas {
+            width: 200px;
+        }
+
+        /* box背景色用于对比显示clock */
+        #box {
+            width: 800px;
+            height: 800px;
+            background-color: pink
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="box">
+        <!-- canvas画布 大小为600*600 canvas未正常显示时显示标签内文字 -->
+        <canvas id="clock" width="600" height="600">您的浏览器不支持canvas标签</canvas>
+    </div>
+
+    <!-- 对canvas画布控制js -->
+    <script>
+        var canvas = document.getElementById("clock")
+        var clock = canvas.getContext("2d")
+
+        //画布背景透明
+        clock.fillStyle = 'rgba(255, 255, 255, 0)';
+
+
+
+
+
+        function play() {
+            //清空画布
+            clock.clearRect(0, 0, canvas.width, canvas.height)
+            clock.save()
+            //绘制画布中心点
+            clock.translate(canvas.width / 2, canvas.height / 2)
+            biaopan()
+            run()
+            clock.restore()
+            //实时刷新页面渲染clock
+            requestAnimationFrame(play)
+
+        }
+        play()
+
+
+
+
+        function biaopan() {
+
+            clock.strokeStyle = "black"
+            clock.lineWidth = 16
+            //表盘绘制
+
+            clock.beginPath()
+            clock.arc(0, 0, 280, 0, 2 * Math.PI)
+            clock.fillStyle = "white"
+            clock.fill()
+            clock.stroke()
+
+
+            //刻度
+            //分针
+            clock.strokeStyle = "gray"
+            clock.lineWidth = 1
+            for (var i = 0; i < 60; i++) {
+                clock.beginPath();
+                clock.moveTo(0, -240);
+                clock.lineTo(0, -250);
+                clock.stroke();
+                clock.rotate(2 * Math.PI / 60)
+            }
+            //时针 
+            clock.strokeStyle = "black"
+            clock.lineWidth = 3
+            for (var i = 0; i < 12; i++) {
+                clock.beginPath();
+                clock.moveTo(0, -235);
+                clock.lineTo(0, -250);
+                clock.stroke();
+                clock.rotate(2 * Math.PI / 12)
+            }
+
+            //数字
+            clock.textAlign = "center"
+            clock.textBaseline = "middle"
+            clock.fillStyle = "green"
+            clock.font = '60 40px 微软雅黑'
+
+            for (var i = 1; i <= 12; i++) {
+                clock.fillText(i, Math.sin(2 * Math.PI / 12 * i) * 190, Math.cos(2 * Math.PI / 12 * i) * -190)
+            }
+
+            //logo
+            clock.textAlign = "center"
+            clock.textBaseline = "middle"
+            clock.fillStyle = "green"
+            clock.font = '600 40px 微软雅黑'
+            clock.fillText("CLOCK", 0, -100, )
+
+
+        }
+
+        function run() {
+            // clock.translate(canvas.width/2, canvas.height/2)
+
+
+            //当前时间
+            var d = new Date()
+            var h = d.getHours()
+            var m = d.getMinutes()
+            var s = d.getSeconds()
+            //分针
+            clock.save()
+            clock.rotate(2 * Math.PI / 60 * m + 2 * Math.PI / 60 * s / 60)
+            clock.strokeStyle = "eee"
+            clock.lineWidth = 4
+            clock.beginPath()
+            clock.moveTo(0, 30)
+            clock.lineTo(0, -200)
+            clock.stroke()
+            clock.restore()
+            //时针
+            clock.save()
+            clock.rotate(2 * Math.PI / 12 * h + 2 * Math.PI / 60 * m / 60)
+            clock.strokeStyle = "black"
+            clock.lineWidth = 8
+            clock.beginPath()
+            clock.moveTo(0, 20)
+            clock.lineTo(0, -150)
+            clock.stroke()
+            clock.restore()
+            //秒针
+            clock.save()
+            clock.rotate(2 * Math.PI / 60 * s)
+            clock.strokeStyle = "eee"
+            clock.lineWidth = 3
+            clock.beginPath()
+            clock.moveTo(0, 40)
+            clock.lineTo(0, -250)
+            clock.stroke()
+            clock.restore()
+
+            //表芯
+            clock.save()
+            clock.beginPath();
+            clock.arc(0, 0, 8, 0, 2 * Math.PI);
+            clock.fill();
+            clock.restore()
+
+        }
+    </script>
+</body>
+
+</html>
